@@ -149,6 +149,17 @@ ffi_fn! {
 }
 
 ffi_fn! {
+    fn rure_clone(re: *const Regex) -> *const Regex {
+        let re = unsafe { &*re };
+        Box::into_raw(Box::new(
+            Regex {
+                re: re.re.clone(),
+                capture_names: re.capture_names.clone(),
+            }))
+    }
+}
+
+ffi_fn! {
     fn rure_free(re: *const Regex) {
         unsafe { Box::from_raw(re as *mut Regex); }
     }
@@ -521,6 +532,12 @@ ffi_fn! {
                 }
             }
         }
+    }
+}
+
+ffi_fn! {
+    fn rure_set_clone(re: *const RegexSet) -> *const RegexSet {
+        Box::into_raw(Box::new(RegexSet { re: unsafe { (*re).clone() }}))
     }
 }
 
